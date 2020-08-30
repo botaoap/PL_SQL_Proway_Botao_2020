@@ -93,7 +93,7 @@ AS
 
 SELECT * FROM PRO_FUNC_CIDADE;
 
---------------------------- Sequence ------------------------------
+--------------------------- SEQUENCE ------------------------------
 gerador de sequencia para chave primaria (PK)
 DROP SEQUENCE PRO_CARGO_SEQ;
 
@@ -215,7 +215,41 @@ GRANT SELECT ON PRO_ESTA TO PRO_ALUNO;
 GRANT SELECT, INSERT ON PRO_CIDADE TO PRO_ALUNO;
 GRANT SELECT ON PRO_CIDADE_SEQ TO PRO_ALUNO
 
---------------------- UPDATE ----------------------------------------------
+------------------------------ UPDATE ----------------------------------------------
+UPDATE PRO_CIDADE C
+  SET C.NMCIDADE = 'MARINGUA',
+      C.DTALTERA = SYSDATE,
+      C.USUALTERA = USER
+      
+ WHERE C.NMCIDADE = 'MARINGA'
+
+GRANT UPDATE ON PRO_CIDADE TO PRO_ALUNO -- DA PERMISSAO
+
+------------------------------ DELETE --------------------------------------
+DELETE PRO_CIDADE T
+  WHERE T.NMCIDADE = 'LONDRINA'
+
+------------------------- Exercicio ------------------------------
+Inserir cargos na tabela PRO_CARGO
+
+INSERT INTO PRO_CARGO
+(
+ COD_CARGO,
+ DSC_CARGO,
+ SG_CARGO,
+ DTINFORM,
+ CDUSUARI
+)
+VALUES 
+(
+ PRO_CARGO_SEQ.NEXTVAL,
+ 'ESAGIÁGIO',
+ 'ETG',
+ SYSDATE,
+ USER
+)
+
+SELECT * FROM PRO_CARGO
 
 
 
