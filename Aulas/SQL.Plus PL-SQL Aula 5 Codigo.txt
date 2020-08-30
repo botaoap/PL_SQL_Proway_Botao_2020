@@ -145,6 +145,36 @@ GRANT SELECT ON V_CONSULTA_FUNCIONARIO TO PRO_ALUNO -- CRIA PRIVILEGIO PODE FAZE
 REVOKE 
 REVOKE SELECT ON CONSULTA_FUNCIONARIO FROM PRO_ALUNO -- REMOVE O PRIVILEGIO DO SELECT
 
-Role
+Role -- um agrupamento de permissoes que pode ser concedida a usuarios ou outras roles
 
 Synonym
+CREATE SYNONYM CONSULTA_FUNCIONARIO FOR SYSTEM.CONSULTA_FUNCIONARIO -- cria um sinonimo para uma tabela 
+
+--------------------------- Instrução de INSERT ----------------------------
+3 formas de inserir as informações
+
+INSERT INTO PRO_CIDADE 
+(
+ cdcidade,
+ nmcidade,
+ cdesta,
+ dtcadast,
+ usucadas,
+ dtaltera,
+ usualtera
+)
+VALUES
+(
+ PRO_CIDADE_SEQ.NEXTVAL,
+ 'ILHOTA',
+ (SELECT E.CDESTA
+     FROM PRO_ESTA E
+     WHERE UPPER(E.NMESTADO) = 'SANTA CATARINA'
+ ),
+ SYSDATE,
+ 'ALUNO',
+ SYSDATE,
+ USER
+)
+/////////////////////
+
