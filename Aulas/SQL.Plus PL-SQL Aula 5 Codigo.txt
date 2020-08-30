@@ -177,4 +177,45 @@ VALUES
  USER
 )
 /////////////////////
+INSERT INTO PRO_CIDADE 
+/*(
+ cdcidade,
+ nmcidade,
+ cdesta,
+ --dtcadast,
+ --usucadas,
+ dtaltera,
+ usualtera
+)*/
+VALUES
+(
+ PRO_CIDADE_SEQ.NEXTVAL,
+ 'MARINGA',
+ (SELECT E.CDESTA
+     FROM PRO_ESTA E
+     WHERE UPPER(E.NMESTADO) = 'PARANA'
+ ),
+ NULL,
+ NULL,
+ SYSDATE,
+ USER
+)
+////////////////////////
+INSERT INTO PRO_TESTE_CIDADE
+( SELECT C.NMCIDADE,
+         E.NMESTADO
+  
+    FROM PRO_CIDADE C
+     
+    JOIN PRO_ESTA E ON C.CDESTA = E.CDESTA
+);
+
+----------------- Continuação para dar permissoes ao User ---------------------
+GRANT SELECT ON PRO_ESTA TO PRO_ALUNO;
+GRANT SELECT, INSERT ON PRO_CIDADE TO PRO_ALUNO;
+GRANT SELECT ON PRO_CIDADE_SEQ TO PRO_ALUNO
+
+--------------------- UPDATE ----------------------------------------------
+
+
 
