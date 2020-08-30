@@ -1,0 +1,7 @@
+---- Inserir dados em uma tabela existente ----
+
+insert into pro_pais values
+(2, 'USA', 'Estados Unidos', sysdate, 'Usuario', sysdate, 'Usuario')
+
+---- Mudar dados em uma tabela existente ----
+

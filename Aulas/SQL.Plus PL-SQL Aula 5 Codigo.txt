@@ -1,0 +1,135 @@
+---------------------------- Criando tabela -------------------------
+CREATE TABLE PRO_CARGO
+(COD_CARGO NUMBER(10)   NOT NULL,
+ DSC_CARGO VARCHAR2(50) NOT NULL,
+ SG_CARGO  VARCHAR2(10)         ,
+ DTINFORM  DATE         NOT NULL,
+ CDUSUARI  VARCHAR2(50) NOT NULL,
+///////////////////////////////////////////
+CREATE GLOBAL TEMPORARY TABLE PRO_TMP_SAL
+ (COD_FUNC NUMBER(10),
+  NMFUNC   VARCHAR2(50),
+  VAL_SAL  NUMBER(10,2))
+  
+---------------------------- Criando constranit --------------------------
+CONSTRAINT PRO_CARGO_PK PRIMARY KEY (COD_CARGO))
+
+---------------------------- Inserindo informação ------------------------
+INSERT INTO PRO_TMP_SAL
+  VALUES
+    (1,'JOAO',2000)
+
+---------------------------- Deleta tabela -------------------------------
+DROP TABLE PRO_CARGO;
+//////////////////////
+DROP TABLE PRO_TMP_SAL;
+---------------------------- Colocando propriedade na tabela ---------------
+DROP TABLE PRO_TMP_SAL;
+CREATE GLOBAL TEMPORARY TABLE PRO_TMP_SAL
+ (COD_FUNC NUMBER(10),
+  NMFUNC   VARCHAR2(50),
+  VAL_SAL  NUMBER(10,2))
+ON COMMIT PRESERVE ROWS; -- propriedade colocada
+
+---------------------------- Colocando commit no code -----------------------
+INSERT INTO PRO_TMP_SAL
+  VALUES
+    (1,'JOAO',2000);
+COMMIT
+
+--------------------------- Criando tabela com constraint ----------------------
+CREATE TABLE PRO_TMP_FUNC
+         (CODIGO      NUMBER(10),
+          COD_FUNC    NUMBER(10),
+          NMFUNC      VARCHAR2(50),
+          VAL_SAL     NUMBER(10,2),
+          CONSTRAINT SAL_FUNC_PK PRIMARY KEY (CODIGO),
+          CONSTRAINT SAL_FUNC_FK FOREIGN KEY (COD_FUNC)
+             REFERENCES PRO_FUNC(COD_FUNC),
+          CONSTRAINT SAL_NOME_UK UNIQUE (NMFUNC)
+         )
+/////////////////////////////////////////////////
+DROP TABLE PRO_TMP_FUNC;
+CREATE TABLE PRO_TMP_FUNC
+         (CODIGO      NUMBER(10),
+          COD_FUNC    NUMBER(10),
+          NMFUNC      VARCHAR2(50),
+          VAL_SAL     NUMBER(10,2))
+ALTER TABLE PRO_TMP_FUNC
+ADD  CONSTRAINT SAL_FUNC_PK PRIMARY KEY (CODIGO)
+ALTER TABLE PRO_TMP_FUNC
+ADD  CONSTRAINT SAL_FUNC_FK FOREIGN KEY (COD_FUNC)
+        REFERENCES PRO_FUNC(COD_FUNC)
+ALTER TABLE PRO_TMP_FUNC
+ADD  CONSTRAINT SAL_NOME_UK UNIQUE (NMFUNC)
+
+------------------------- Adicionar um campo na Tabela -----------------------
+ALTER TABLE PRO_TMP_FUNC
+ADD DATA_CADASTRO DATE
+///////Modifica/////////
+ALTER TABLE PRO_TMP_FUNC
+MODIFY VAL_SAL NUMBER(12,2)
+///////Exclui Coluna////////
+ALTER TABLE PRO_TMP_FUNC
+DROP COLUMN USUARIO
+         
+---------------------------- Deletar os dados da tabela -------------------------
+DELETE PRO_TMP_SAL
+
+--------------------------- Criando tabela com select -----------------------
+DROP TABLE PRO_FUNC_CIDADE;
+
+CREATE TABLE PRO_FUNC_CIDADE
+AS
+    SELECT  F.COD_FUNC CODIGO,
+            F.NOM_FUNC FUNCIONARIO,
+            C.NMCIDADE CIDADE
+    
+    FROM PRO_FUNC   F
+         
+    JOIN PRO_CIDADE C on F.CDCIDADE = C.CDCIDADE 
+    
+    WHERE C.NMCIDADE = 'BLUMENAU';
+
+SELECT * FROM PRO_FUNC_CIDADE;
+
+--------------------------- Sequence ------------------------------
+gerador de sequencia para chave primaria (PK)
+DROP SEQUENCE PRO_CARGO_SEQ;
+
+CREATE SEQUENCE PRO_CARGO_SEQ
+
+START WITH 1
+MINVALUE 1
+INCREMENT BY 1
+MAXVALUE 9999999999 -- NA TABELA ESSE CAMPO TEM 10 POSIÇÕES
+NOCACHE
+NOCYCLE
+
+-------------------------- Codigo Nextval ------------------------
+pega sempre o proximo valor
+SELECT PRO_FUNC_SEQ.NEXTVAL
+   FROM DUAL
+
+-------------------------- Codigo Curval ------------------------
+pega sempre o valor atual
+SELECT PRO_FUNC_SEQ.CURRVAL
+   FROM DUAL
+
+-------------------------- Criar indices (INDEX) -------------------
+DROP INDEX PRO_FUNC_CIDADE_FK
+CREATE INDEX PRO_FUNC_CIDADE_FK ON PRO_FUNC (CDCIDADE)
+
+-------------------------- Criar View ------------------------------
+CREATE OR REPLACE VIEW CONSULTA_FUNCIONARIO
+AS
+SELECT F.NOM_FUNC Funcionario,
+       D.NM_DPTO  Departamento,
+       C.NMCIDADE Cidade
+
+  FROM PRO_FUNC F
+  
+  JOIN PRO_CIDADE C ON F.CDCIDADE = C.CDCIDADE
+  
+  JOIN PRO_DEPTO D ON F.COD_DPTO = D.COD_DPTO
+////////////////Acessar/brower/edit////////////
