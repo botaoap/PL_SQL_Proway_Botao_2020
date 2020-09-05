@@ -1,1 +1,295 @@
 ----------------- PL/SQL ---------------
+----------------- Test Windown -----------------
+
+-- Created on 05/09/2020 by ORACLE 
+declare 
+  -- Local variables here
+  i integer;
+begin
+  -- Test statements here
+  i := 100;
+  
+  dbms_output.put_line(i);
+end;
+
+----------------- SQL Window -------------------
+-- Created on 05/09/2020 by ORACLE 
+declare 
+  -- Local variables here
+  i integer;
+begin
+  -- Test statements here
+  i := 100;
+  
+  dbms_output.put_line(i);
+end;
+
+----------------- Command Window ----------------------
+SQL> 
+SQL> -- Created on 05/09/2020 by ORACLE
+SQL> declare
+  2    -- Local variables here
+  3    i integer;
+  4  begin
+  5    -- Test statements here
+  6    i := 100;
+  7  
+  8    dbms_output.put_line(i);
+  9  end;
+ 10  /
+
+PL/SQL procedure successfully completed
+
+
+SQL> set serveroutput on
+SQL> /
+
+100
+
+PL/SQL procedure successfully completed
+
+---------------- Variaveis Test W --------------------
+declare 
+  -- Local variables here
+  i number(4);
+  v_id number(4);
+  v_x varchar2(10);
+  v_y varchar2(10);
+  v_z varchar2(10);
+  v_aniversario date :=  sysdate;
+  v_em_stock boolean := True;
+
+---------------- Ex. Variaveis Test ---------------------
+-- Created on 05/09/2020 by ORACLE 
+declare 
+  -- Local variables here
+  V_sal       number(7,2)   := 60000;
+  V_com       number(7,2)   := v_sal*0.2;
+  V_mensagem  varchar2(255) := 'de qualidade';
+begin
+  -- Test statements here
+  declare
+    V_sal      number(7,2) := 50000;
+    V_com      number(7,2) := 0;
+    V_total    number(7,2) := v_sal + v_com;
+  
+  begin
+    
+    V_mensagem := ' Assistente ' || v_mensagem;
+    
+    dbms_output.put_line(V_mensagem);       
+  end;
+  
+  V_mensagem := 'Programador - ' || v_mensagem;
+  
+  dbms_output.put_line(V_mensagem);
+  -- dbms_output.put_line(V_total);
+  
+end;
+
+--------------------- Estrutura de Controle -----------------
+Instruções condicionais
+IF - THEN - END IF
+IF - THEN - ELSE - END IF
+IF - THEN - ELSIF - END IF
+
+Ciclos
+LOOP
+FOR
+WHILE
+
+--------------------------- IF -----------------------------
+declare 
+  -- Local variables here
+  v_valor number(10) := 5;
+begin
+  -- Test statements here
+  /* Condição IF
+     Programa de Teste
+  */
+  if v_valor = 0 then
+    dbms_output.put_line('Valor: ' || v_valor);
+  elsif v_valor = 5 then
+    dbms_output.put_line('Valor: ' || v_valor);
+  else
+    dbms_output.put_line('Valor '|| v_valor ||' inválido');
+
+  end if;
+
+end;
+
+---------------------------- LOOP ------------------------------
+-- Created on 05/09/2020 by ORACLE 
+declare 
+  -- Local variables here
+  v_valor number(5) := 5;
+begin
+  -- Test statements here
+  /* Condição LOOP
+     Ciclo
+  */
+  loop
+    if v_valor <> 10 then
+      v_valor := v_valor + 1;
+    elsif v_valor = 10 then
+      EXIT;
+    end if;
+    -- EXIT WHEN v_valor = 10;
+  end loop;
+  
+end;
+------------------------- FOR ----------------------
+-- Created on 05/09/2020 by ORACLE 
+declare 
+  -- Local variables here
+  v_valor     number(5) := 5;
+begin
+  -- Test statements here
+  /* Condição FOR
+        Teste
+  */
+  FOR teste_FOR IN 1..5
+  LOOP
+    
+    DBMS_OUTPUT.put_line('Passou pelo for! ' || teste_FOR);
+  END LOOP;
+end;
+
+------------------------ WHILE ------------------------
+-- Created on 05/09/2020 by ORACLE 
+declare 
+  -- Local variables here
+  v_valor     number(5) := 5;
+begin
+  -- Test statements here
+  /* Condição WHILE
+        TESTE
+  */   
+  WHILE v_valor < 12
+    LOOP
+      v_valor := v_valor + 1;
+      
+      dbms_output.put_line('Passou pelo While ' || v_valor);
+      
+    END LOOP;
+  
+end;
+
+---------------------- Ex de Ciclo com criação de Tabeça -----------------
+create table pro_func_cliente
+ (codigo     number(10), 
+  cliente    varchar2(50),
+  cdcidade   number(10),
+  
+  constraint CLIENTE_FUNC_PK Primary Key (codigo),
+  constraint CLIENTE_FUNC_FK Foreign Key (cdcidade)
+     references pro_cidade(cdcidade)
+  )  
+/////////////
+-- Created on 05/09/2020 by ORACLE 
+declare 
+  -- Local variables here  
+  v_nome   pro_func.nom_func%type;
+  v_cidade pro_cidade.nmcidade%type := 1;
+  Contador number(2) := 1;
+  
+begin
+  -- Test statements here
+  LOOP
+    INSERT INTO pro_func_cliente
+    (
+     codigo,
+     cdcidade,
+     cliente
+    )
+    values
+    (
+     pro_cliente_seq.nextval,
+     v_cidade, 
+     contador
+    );
+    
+    Contador := contador + 1;
+    
+    Exit when contador > 10;
+  END LOOP;
+  
+end;
+
+--------------------- Usando SELECT no PL/SQL com INTO --------------------------
+-- Created on 05/09/2020 by ORACLE 
+declare 
+  -- Local variables here
+  v_nome_cidade    varchar2(50);
+  v_codigo_cidade  pro_cidade.cdcidade%TYPE;
+  v_nome_estado    pro_esta.nmestado%type;
+begin
+  -- Test statements here
+  SELECT c.cdcidade,
+         c.nmcidade,
+         e.nmestado
+  INTO   v_codigo_cidade,
+         v_nome_cidade,
+         v_nome_estado
+  FROM   pro_cidade c
+  JOIN   pro_esta e on c.cdesta = e.cdesta
+  WHERE  c.cdcidade = 1;
+  
+  dbms_output.put_line(v_codigo_cidade ||' '|| v_nome_cidade ||' '|| v_nome_estado);
+
+end;
+
+--------------------------- Exercicio usando Select,INTO e Tableas no PL/SQL --------------------
+-- Created on 05/09/2020 by ORACLE 
+declare 
+  -- Local variables here
+  v_codigo_funcionario   pro_func.cod_func%type;
+  v_nome_funcionario     pro_func.nom_func%type;
+  v_nome_departamento    pro_depto.nm_dpto%type;
+  v_maior_salario        pro_func.vl_salario%type;
+  v_menor_salario        pro_func.vl_salario%type;
+  
+begin
+  -- Test statements here
+  /* Coloca o valor das variaveis de maior e menor salario!*/
+  SELECT max(f.vl_salario),
+         min(f.vl_salario)
+  INTO   v_maior_salario,
+         v_menor_salario
+  FROM   pro_func f;
+  /* Mostra qm é a pessoa q tem o maior salário */
+  SELECT f.cod_func,
+         f.nom_func,
+         d.nm_dpto
+  INTO   v_codigo_funcionario,
+         v_nome_funcionario,
+         v_nome_departamento
+  FROM   pro_func f
+  JOIN   pro_depto d on f.cod_dpto = d.cod_dpto
+  where  f.vl_salario = v_maior_salario;
+  /* DMBS monta a mensagem que o slect está pegando as 
+     tabelas e exibe na tela */
+  dbms_output.put_line(v_nome_funcionario          ||
+                       ' do Departamento de '      || 
+                       v_nome_departamento         ||
+                       ', possui o Menor salário: '||
+                       v_maior_salario);
+  /* Mostra qm é a pessoa q tem o menor salário */
+  SELECT f.cod_func,
+         f.nom_func,
+         d.nm_dpto
+  INTO   v_codigo_funcionario,
+         v_nome_funcionario,
+         v_nome_departamento
+  FROM   pro_func f
+  JOIN   pro_depto d on f.cod_dpto = d.cod_dpto
+  where  f.vl_salario = v_menor_salario;
+  /* DMBS monta a mensagem que o slect está pegando as 
+     tabelas e exibe na tela */  
+  dbms_output.put_line(v_nome_funcionario          ||
+                       ' do Departamento de '      || 
+                       v_nome_departamento         ||
+                       ', possui o Menor salário: '||
+                       v_menor_salario); 
+
+end;
