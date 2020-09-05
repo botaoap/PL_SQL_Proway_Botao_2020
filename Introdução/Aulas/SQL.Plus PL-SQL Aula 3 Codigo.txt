@@ -1,0 +1,234 @@
+------------------- Left alter Join = (+) -----------------------------------
+pode n ter na tabela q esta ao lado do (+)
+
+select initcap(f.nom_func)
+
+from pro_func  f,
+     pro_depto d
+
+where f.cod_dpto = d.cod_dpto (+) --pode n ter na tabela q esta ao lado do (+)
+
+----------------- Pag 56, funções mais usadas ------------------------------
+
+months_between
+
+add_months
+
+netx_day
+
+last_day
+
+round
+
+trunc
+
+-------------------------------------- OBS. ------------------------------
+
+varchar (50)  -- tem espaço de 50 e caso colocar um nome com 4 "espaços" ele vai preencher o resto dos espaços
+
+varchar2 (50) -- mesma coisa do de cima mas ele preenche apenas o que foi preenchido e deixa assim
+varchar2      -- usa-se mais esse
+----------------------------- round e trunc ---------------------------------
+
+select f.vl_salario / 3,
+       round(f.vl_salario / 3,2), -- Round arredonda pra cima (normalmente usa esse)
+       trunc(f.vl_salario / 3,2)  -- Trunc (truncando) apenas corta o numero
+       
+from pro_func  f,
+     pro_depto d
+
+where f.cod_dpto = d.cod_dpto (+) --pode n ter na tabela q esta ao lado do (+)
+
+order by f.nom_func
+
+----------------------------- Pag. 58, 61 TO_CHAR com numero ----------------------------------
+
+select 'Seu salário é de R$'         || -- || server para concatenar e escrever frases na tabela
+       to_char(f.vl_salario)         ||
+       ' por mês. '                  ||
+       'Com aumento de 13,3% fica: ' ||
+       f.vl_salario * 1.133 Salário
+       
+
+from pro_func  f,
+     pro_depto d
+     
+where f.cod_dpto = d.cod_dpto (+)
+////////////////////////////////////////////////////////////////
+select 'Seu salário é de '                 ||
+       to_char(f.vl_salario,'9,999,999.99') ||
+       ' por mês. '                        ||
+       'Com aumento de 13,3% fica: '       ||
+       to_char(trunc(f.vl_salario * 1.133,2),'9,999,999.99') Salário, -- TO_CHAR faz o Round automaticamente
+       
+       f.vl_salario * 1.33 Porcento
+       
+
+from pro_func  f,
+     pro_depto d
+     
+where f.cod_dpto = d.cod_dpto (+)
+
+------------------------------ Pag. 59 TO_CHAR com data --------------------------------------
+
+select f.nom_func           Funcionário ,
+       f.dat_admissao          Admissão ,   
+       to_char(f.dat_admissao,'DD') Dia ,
+       to_char(f.dat_admissao,'MM') Mês ,
+       to_char(f.dat_admissao,'YYYY') Ano
+
+from pro_func  f
+/////////////////////////////////////////
+select f.nom_func           Funcionário ,
+       f.dat_admissao          Admissão ,   
+       to_char(f.dat_admissao,'Dy') Dia ,
+       to_char(f.dat_admissao,'Month') Mês ,
+       to_char(f.dat_admissao,'YYYY') Ano
+
+from pro_func  f
+
+
+--------------------------- Pag. 61 TO_NUMBER, TO_DATE -------------------------------
+
+select f.vl_salario,
+
+       to_number('1000') valor,
+       to_char(to_date('2001/30/03','YYYY/DD/MM'), 'Dy , dd/mm/yy') Dat       
+       
+
+from pro_func  f
+
+---------------------- Exercicios ---------------------------------------
+nome e data de admissao
+
+select f.nom_func     nome     ,
+       f.dat_admissao admissao
+      
+from pro_func  f
+
+//////////////////////
+trazer funcionarios q foram admitidos no mes de setembro
+
+select f.nom_func          nome     ,
+       nvl(f.vl_salario,0) Salário  ,
+       f.dat_admissao      Admissao 
+
+from pro_func  f
+
+where to_number(to_char(f.dat_admissao, 'MM')) = 9
+
+///////////////////////////////////////////////
+fazer um calculo com acrescimo de 10% no salarios das pessoas
+q entraram ate 2007
+
+select 'Salário de ' ||
+       nvl(to_char(f.vl_salario,'9,999,999.99'),0)||
+       ' com acrescimo de 10% fica ' ||
+       nvl(to_char(f.vl_salario * 1.110,'9,999,999.99'),0) Salario,
+       f.dat_admissao
+
+
+from pro_func  f
+
+where to_number(to_char(f.dat_admissao,'YYYY')) <= 2007
+
+///////////////////////////////////////////////
+igual a anterios mas agr ate agosto de 2007
+
+select f.nom_func Nome ,
+       'Salário de ' ||
+       nvl(to_char(f.vl_salario,'9,999,999.99'),0)||
+       ' com acrescimo de 10% fica ' ||
+       nvl(to_char(f.vl_salario * 1.110,'9,999,999.99'),0) Salario,
+       f.dat_admissao
+
+
+from pro_func  f
+
+where f.dat_admissao <= to_date('082007','MMYYYY')
+
+/////////////////////////////////////////////////////
+Listar funcionarios admitidos entre 01/02/1998 e 31/07/2005
+
+select f.nom_func Nome ,
+       to_char(f.dat_admissao) Admissao
+
+
+from pro_func  f
+
+where f.dat_admissao between to_date('01/02/1998','dd/mm/yyyy') and to_date('31/07/2005','dd/mm/yyyy')
+
+////////////////////////////////////////////////////
+listar funcionarios admitidos no dia 05 de qualquer mes
+
+select f.nom_func  Nome ,
+       to_char(f.dat_admissao,'dd/mm/yyyy') Admissao
+
+from pro_func  f
+
+where to_number(to_char(f.dat_admissao,'dd')) = 15 
+
+----------------------------- Select dentro de um Select -------------------------
+
+select f.nom_func Nome, 
+       to_char(f.dat_admissao, 'dd/mm/yyyy') Admissao,
+       f.vl_salario Salário,
+       (select max(d.vl_salario) from pro_func d) max
+       
+        
+from pro_func  f
+
+where to_number(to_char(f.dat_admissao, 'dd')) = 15
+
+----------------------------- Criar tabela Com Scripts ----------------------------------
+
+create table pro_func_gabriel(
+        CD_FUNCIONARIO  NUMBER(10) not null,
+        NM_FUNCIONARIO  VARCHAR2(50) not null,
+        DT_ADMISSAO     DATE not null,
+        VL_SALARIO      NUMBER(10,2),
+        CD_CIDADE       NUMBER(10) not null,
+        CD_DPTO         NUMBER(10)
+ )
+
+------------------------------- Inserir dados na tabela ------------------------------
+
+INSERT INTO pro_func_gabriel
+            (CD_FUNCIONARIO,NM_FUNCIONARIO,DT_ADMISSAO,CD_CIDADE)          
+
+ VALUES (1,'Gabriel Botão',sysdate,500)
+
+
+------------------------ Alterar campos dentro da tabela -------------------
+
+update pro_func_gabriel g
+
+set g.vl_salario = 10000
+
+where g.cd_funcionario = 1
+
+----------------------- Alterar campos ja existentes com conta ----------------
+
+update pro_func_gabriel g
+
+set g.vl_salario = g.vl_salario * 1.1  -- = no SET é uma atribuição 
+
+where g.vl_salario < 10000 
+
+---------------------- Deletar algo dentro da tabela --------------------------
+
+delete pro_func_gabriel g
+
+where g.cd_funcionario = 2
+
+
+
+
+
+
+
+
+
+
+
+

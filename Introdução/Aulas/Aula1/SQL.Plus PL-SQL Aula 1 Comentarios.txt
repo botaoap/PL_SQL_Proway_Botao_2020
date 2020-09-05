@@ -1,0 +1,33 @@
+Banco de dados -> Relacional
+
+Colunas -> Tipo
+
+Usar Registros/Dados -> Junto chama de Planilha
+
+No banco de dados chamamos de Tabela
+
+//Meu Codigo de Aluno-> 69146
+
+Codigo chamamos de Primary Key -> PK
+
+Pk -> relaciona as tabelas 
+
+Pk -> O sistema gera o Código Pk
+
+Coluna -> Cada soluna precisa ter o mesmo tipo de dado pg.21
+
+F8 proximo comando
+
+
+Significado SQL -> Structure Query Language ( Estrutura de consulta de linguajem)
+
+Criar apelidos no SQL (Alias)
+
+Juntar tabelas -> where (oq tem em comum) = (oq tem em comum)
+
+RollBack -> Desfaz oq foi feito
+
+Commit -> Salva oq foi feito e manda para todo o banco
+
+Order By -> uma ordem de do que eu quero fazer com a tabela
+

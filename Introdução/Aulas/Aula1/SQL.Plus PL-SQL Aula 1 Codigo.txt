@@ -1,0 +1,28 @@
+select cid.cdcidade codigo , --(colunas na qual quero mostrar)
+       cid.nmcidade cidade ,
+       est.sigesta  uf     ,
+       pais.nmpais país       
+       
+from pro_cidade cid , --(tabelas que estou trabalhando)
+     pro_esta   est ,
+     pro_pais   pais
+
+ where cid.cdesta   =  est.cdesta --(consdições que preciso ter)
+   and est.cdpais   =  pais.cdpais --(assim as tabelas nao multiplicão)
+   and cid.cdcidade >= 1
+-------------------------------------------------------
+
+
+select cid.nmcidade cidade, 
+       est.sigesta estado
+       
+ from pro_cidade cid, pro_esta est
+ 
+ where cid.cdesta = est.cdesta
+   --and cid.cdcidade between 4 and 6 -- entre um numero e outro
+   --and cid.cdcidade in (1,4,6) -- faz uma lista dos quais quero ver
+   --and cid.nmcidade like 'B%' -- % depende de onde esta faz com que ele procure no come meio ou fim
+   --and est.cdesta = 1 -- código do estado
+ 
+ order by est.sigesta, -- colocar em ordem a coluna que vc qr
+          cid.nmcidade
