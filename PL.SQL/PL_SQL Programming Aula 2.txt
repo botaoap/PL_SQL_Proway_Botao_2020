@@ -1,0 +1,278 @@
+------------------------------ Test Window ------------------------------
+------------------ ESTRUTURA DE CONTROLE CONDICIONAIS -------------------
+------------------ Usando condição CASE ---------------------------------
+-- Created on 13/09/2020 by ORACLE 
+declare 
+  -- Local variables here
+  curso varchar2(20) := 'POSTGRESQL';
+begin
+  -- Test statements here
+  CASE
+    WHEN CURSO = 'SQL' THEN 
+      dbms_output.put_line('Inicício dia 10/11/2018');
+    WHEN CURSO = 'PL/SQL' THEN
+       dbms_output.put_line('Início dia 15/12/2017');
+    ELSE
+      dbms_output.put_line('Curso não encontrado');
+  END CASE;
+end;
+
+---------------- Usando SELECT como comando em PL/SQL -----------------------
+-- Chamamos a tabela atraves do comando com SELECT e mostra a menssagem de
+-- quantos funcionários tem nessa tabela
+
+-- Created on 13/09/2020 by ORACLE 
+declare 
+  -- Local variables here
+  v_qtd_func NUMBER;
+begin
+  -- Test statements here
+  SELECT COUNT(*) -- Função de Grupo
+     INTO v_qtd_func
+     FROM pro_func f;
+  dbms_output.put_line('Qtd de Funcionários = ' || v_qtd_func);
+end;
+///////// encremento /////////////
+-- Created on 13/09/2020 by ORACLE 
+declare 
+  -- Local variables here
+  v_qtd_func NUMBER;
+begin
+  -- Test statements here
+  SELECT COUNT(*) -- Função de Grupo
+     INTO v_qtd_func
+     FROM pro_func f;
+  loop
+    if v_qtd_func = 10 then
+      dbms_output.put_line('Funcionários chegou a 10');
+      exit;
+    elsif v_qtd_func = 16 then
+      dbms_output.put_line('Funcionários chegou a 16');
+      exit;
+    else
+      dbms_output.put_line('Funcionários chegou a = ' || v_qtd_func);
+      exit;
+    end if;
+  end loop;
+  dbms_output.put_line('Qtd de Funcionários = ' || v_qtd_func);
+end;
+
+------------------- Exercicio Revisão PL/SQL --------------------
+
+-- Created on 13/09/2020 by ORACLE 
+declare 
+  -- Local variables here
+  v_nome_depto pro_depto.nm_dpto%type;
+begin
+  -- Test statements here
+  for i in 1..5 
+   loop
+    if i = 3 then
+      select d.nm_dpto
+      into   v_nome_depto
+      from   pro_depto d
+      where  d.cod_dpto = i;
+       dbms_output.put_line(' Nome do departamento = ' || v_nome_depto);
+    end if;  
+  end loop;
+end;
+
+---------------------- Instruções de exceção Indefinida --------------------------
+-- Created on 13/09/2020 by ORACLE 
+declare 
+  -- Local variables here
+  v_nome_depto pro_depto.nm_dpto%type;
+begin
+  -- Test statements here
+  for i in 1..10
+   loop
+    if i = 10 then
+       BEGIN
+          select d.nm_dpto
+          into   v_nome_depto
+          from   pro_depto d
+          where  d.cod_dpto = i;
+          dbms_output.put_line(' Nome do departamento = ' || v_nome_depto);
+        EXCEPTION
+          WHEN NO_DATA_FOUND THEN
+            dbms_output.put_line('Departamento não encontrado ' || SQLERRM);
+          WHEN OTHERS THEN
+            dbms_output.put_line('Dados não encontrado na execução da linha 18 ' || SQLERRM);
+       END;
+        -- dbms_output.put_line(' Nome do departamento = ' || v_nome_depto);
+    end if;  
+  end loop;
+  EXCEPTION 
+    WHEN OTHERS THEN
+      dbms_output.put_line('Programa abortado por código inválido ' || SQLERRM);
+end;
+////////////// COLOCANDO EXCEPTIONS E MAIS DE UM BEGIN ////////////////////
+-- Created on 13/09/2020 by ORACLE 
+declare 
+  -- Local variables here
+  v_nome_depto pro_depto.nm_dpto%type;
+  v_nome_d2    pro_depto.nm_dpto%type;
+begin
+  -- Test statements here
+  for i in 1..10
+   loop
+    if i = 3 then
+       BEGIN
+          select d.nm_dpto
+          into   v_nome_depto
+          from   pro_depto d
+          where  d.cod_dpto = i;
+          dbms_output.put_line(' Nome do departamento = ' || v_nome_depto);
+        EXCEPTION
+          WHEN NO_DATA_FOUND THEN
+            dbms_output.put_line('Departamento não encontrado linha 19' || SQLERRM);
+          WHEN OTHERS THEN
+            dbms_output.put_line('Dados não encontrado na execução da linha 21 ' || SQLERRM);
+       END;
+        -- dbms_output.put_line(' Nome do departamento = ' || v_nome_depto);
+    end if;
+    BEGIN
+      select x.nm_dpto
+      into   v_nome_d2
+      from   pro_depto x
+      where  x.cod_dpto = i;
+    EXCEPTION
+      WHEN OTHERS THEN
+        dbms_output.put_line('Departamento inexixtente linha 32 ' || SQLERRM);
+      
+    END;
+   end loop;
+EXCEPTION
+  WHEN OTHERS THEN
+    dbms_output.put_line('Programa abortado por código inválido ' || SQLERRM);
+end;
+
+--------------------- Instruções de exceção Definida ---------------------
+-- Created on 13/09/2020 by ORACLE 
+declare 
+  -- Local variables here
+  EXP_1 EXCEPTION;
+  EXP_2 EXCEPTION;
+  EXP_3 EXCEPTION;
+  
+  ERROR VARCHAR2(1000); -- Variavel de texto para atribuir o texto de erro nas EXCEPTION
+  
+  qtd   NUMBER;
+  xp    INTEGER;
+  total INTEGER;
+begin
+  -- Test statements here
+  BEGIN
+    if qtd = 1 then
+      dbms_output.put_line('Linha 13');
+    elsif qtd = 3 then
+      dbms_output.put_line('Linha 15');
+    end if;  
+  EXCEPTION
+    WHEN OTHERS THEN
+      ERROR := SQLERRM;
+      RAISE EXP_3;
+  END;
+  BEGIN
+    xp := 1;
+  EXCEPTION
+    WHEN OTHERS THEN
+      ERROR := SQLERRM;
+      RAISE EXP_1;  
+     
+  END;
+  BEGIN
+    total := 0.1;
+  EXCEPTION
+    WHEN OTHERS THEN
+      ERROR := SQLERRM;
+      RAISE EXP_2;
+  END;
+EXCEPTION
+  WHEN EXP_1 THEN
+    dbms_output.put_line('Ocorreu a EXCEPTION EXP_1 ' || ERROR); 
+  WHEN EXP_2 THEN
+    dbms_output.put_line('Ocorreu a EXCEPTION EXP_2 ' || ERROR); 
+  WHEN EXP_3 THEN
+    dbms_output.put_line('Ocorreu a EXCEPTION EXP_3 ' || ERROR); 
+end;
+
+
+------------------ Function(Funções) -------------------- 
+Created on 13/09/2020 by ORACLE 
+declare 
+  
+   v_mult number;
+   
+   FUNCTION AULA_13_09 (p_valor1 in number,
+                        p_valor2 in number)
+     RETURN NUMBER
+   IS
+     total number;
+   BEGIN
+     total := p_valor1 * p_valor2;
+     return(total);
+   END;
+  
+begin
+   
+  v_mult := AULA_13_09(2,2);
+ 
+  dbms_output.put_line('Resultado da função = ' || v_mult);
+    
+  
+end;
+
+-------------------------- Procedure(Procedimento) -------------------------
+-- Created on 13/09/2020 by ORACLE 
+declare 
+  
+   v_soma number;
+   
+   PROCEDURE AULA_14_09 (p_valor1 in number,
+                         p_valor2 in number,
+                         p_saida  out number)
+   IS
+     -- resultado number;
+   BEGIN
+     -- resultado := p_valor1 + p_valor2;
+     p_saida := p_valor1 + p_valor2;
+   END;
+  
+begin
+   
+  
+  AULA_14_09(2,2,v_soma);
+  
+  dbms_output.put_line('Resultado da procedure = ' || v_soma);
+  
+  
+end;
+
+------------------------ Trigger -------------------------
+-- programa Trigger está ligado em alguma tabela
+-- não da para fazer Trigger em "anonimo" como a Função e Procedimento logo acima
+-- Trigger sever para fazer um "log" mostrando qm fez as alterações
+CREATE OR REPLACE TRIGGER TG_PRO_PAIS_INS
+BEFORE INSERT
+  ON PRO_PAIS
+FOR EACH ROW -- PARA CADA LINHA CRIADA
+
+BEGIN
+  NULL;
+END;
+**** → FECHA A JANELA SQL WINDOW E ABRE ATRAVEZ DO BROWSER A TRIGGER
+**** → LOGO EM SEGUIDA APERTA EM "EDIT" PARA ABRIR A TRIGGER
+CREATE OR REPLACE TRIGGER TG_PRO_PAIS_INS
+BEFORE INSERT
+  ON PRO_PAIS
+FOR EACH ROW -- PARA CADA LINHA CRIADA
+
+BEGIN
+  :NEW.DTCADAST := SYSDATE;
+  :NEW.USUCADAS := USER;
+END;
+
+-------------------------------------------------------------
+
+
