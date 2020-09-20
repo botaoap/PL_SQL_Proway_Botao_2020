@@ -69,4 +69,48 @@ begin
   END;
 end;
 
----------------- 
+---------------- Trigger com AFTER 1º SQL WINDOW -------------------------
+
+CREATE OR REPLACE TRIGGER TG_PRO_PAIS_AFT
+AFTER INSERT
+  ON PRO_PAIS
+FOR EACH ROW -- PARA CADA LINHA CRIADA
+
+BEGIN
+  
+END;
+
+-------------- CRIANDO TABELA DE EXEMPLO ------------------------
+
+CREATE TABLE PRO_PAIS_SUL
+(
+ NOME_PAIS   VARCHAR2(50),
+ SIGLA_PAIS  VARCHAR2(10)
+ 
+)
+
+
+-------------- Trigger com AFTER 2º Program Window ------------------------
+
+CREATE OR REPLACE TRIGGER TG_PRO_PAIS_AFT
+AFTER INSERT
+  ON PRO_PAIS
+FOR EACH ROW -- PARA CADA LINHA CRIADA
+
+BEGIN
+  INSERT INTO PRO_PAIS_SUL
+    (
+     PRO_PAIS_SUL.NOME_PAIS,
+     PRO_PAIS_SUL.SIGLA_PAIS
+    )
+  VALUES
+    (
+     :OLD.NMPAIS,
+     :OLD.SGPAIS
+    ); 
+END;
+
+--------------- Fazendo o teste com as 2 TRIGGERS --------------------------
+Usando condições tbm para commit caso ele insira ou rollback 
+quando der algum erro
+
