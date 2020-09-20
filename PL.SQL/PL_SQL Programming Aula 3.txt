@@ -112,5 +112,282 @@ END;
 
 --------------- Fazendo o teste com as 2 TRIGGERS --------------------------
 Usando condições tbm para commit caso ele insira ou rollback 
-quando der algum erro
+quando der algum erro.
+Quando o banco n tem unigue key ou PK "certos" é preciso fazer td
+pela programação (PL/SQL)
+
+-- Created on 20/09/2020 by ORACLE 
+declare 
+  -- Local variables here
+  V_NOME_PAIS            VARCHAR2(50) := 'CHINA';
+  V_SIGLA_PAIS           VARCHAR2(10) := 'CHN';
+  V_QTD_EXISTE_PAIS      NUMBER;
+  
+  V_QTD_PAIS_INICIO      NUMBER;
+  V_QTD_PAIS_FINAL       NUMBER;
+  
+  V_QTD_PAIS_SUL_INICIO NUMBER;
+  V_QTD_PAIS_SUL_FINAL   NUMBER;
+  
+begin
+  -- Test statements here
+  
+  BEGIN
+    SELECT COUNT (*)
+    INTO   V_QTD_EXISTE_PAIS
+    FROM   PRO_PAIS P
+    WHERE  P.NMPAIS = V_NOME_PAIS;
+  EXCEPTION
+    WHEN OTHERS THEN
+      dbms_output.put_line('Erro ao buscar o país ' || SQLERRM);
+  END;
+  
+  IF V_QTD_EXISTE_PAIS = 0 THEN
+    BEGIN
+      SELECT COUNT (*)
+      INTO V_QTD_PAIS_INICIO
+      FROM PRO_PAIS;
+    EXCEPTION
+    WHEN OTHERS THEN
+      dbms_output.put_line('Erro ao Buscar quantidade inicial ' || SQLERRM);
+    END;
+    
+    BEGIN
+      SELECT COUNT (*)
+      INTO   V_QTD_PAIS_SUL_INICIO
+      FROM   PRO_PAIS_SUL;
+    EXCEPTION
+      WHEN OTHERS THEN
+        dbms_output.put_line('Erro ao Buscar quantidade inicial ' || SQLERRM);
+    END;
+
+    BEGIN
+      INSERT INTO PRO_PAIS
+        (
+         PRO_PAIS.SGPAIS,
+         PRO_PAIS.NMPAIS
+        )
+        VALUES
+           (
+            V_SIGLA_PAIS,
+            V_NOME_PAIS
+           );
+      EXCEPTION
+        WHEN OTHERS THEN
+          dbms_output.put_line('Não foi possível inserir '|| SQLERRM);
+    END;
+      
+    BEGIN
+      SELECT COUNT (*)
+      INTO   V_QTD_PAIS_FINAL
+      FROM   PRO_PAIS;
+    EXCEPTION
+      WHEN OTHERS THEN
+        dbms_output.put_line('Erro ao Buscar quantidade final ' || SQLERRM);
+    END;
+    
+    BEGIN
+      SELECT COUNT (*)
+        INTO V_QTD_PAIS_SUL_FINAL
+        FROM PRO_PAIS_SUL;
+    EXCEPTION
+      WHEN OTHERS THEN
+        dbms_output.put_line('Erro ao Buscar quantidade final ' || SQLERRM);
+    END;
+    
+    IF (V_QTD_PAIS_INICIO < V_QTD_PAIS_FINAL)
+       AND
+       (V_QTD_PAIS_SUL_INICIO < V_QTD_PAIS_SUL_FINAL)   
+    THEN
+      COMMIT;
+    ELSE
+      ROLLBACK;
+    END IF;
+  ELSE
+    dbms_output.put_line('Pais ja existe ' || SQLERRM);
+  END IF;
+end;
+
+----------------- Trigger para UPDATE 1º --------------------
+
+CREATE OR REPLACE TRIGGER TG_PRO_PAIS_UPDATE
+BEFORE UPDATE
+  ON PRO_PAIS
+FOR EACH ROW
+
+BEGIN
+  NULL;
+END;
+
+-------------- Trigger para UPDATE 2º ------------------------
+
+CREATE OR REPLACE TRIGGER TG_PRO_PAIS_UPDATE
+BEFORE UPDATE
+  ON PRO_PAIS
+FOR EACH ROW
+
+BEGIN
+  IF :NEW.SGPAIS <> :OLD.SGPAIS THEN
+    INSERT INTO PRO_LOG
+      (
+       PRO_LOG.NMTABELA,
+       PRO_LOG.NMCAMPO,
+       PRO_LOG.VAL_ANTIGO,
+       PRO_LOG.VAL_NOVO,
+       PRO_LOG.DTALTERA,
+       PRO_LOG.USUALTERA
+      )
+     VALUES
+      (
+       'PRO_PAIS',
+       'SGPAIS',
+       :OLD.SGPAIS,
+       :NEW.SGPAIS,
+       SYSDATE,
+       USER
+      );
+  END IF;
+END;
+
+------------ Trigger para UPDATE 3º --------------------------
+
+-- Created on 20/09/2020 by ORACLE 
+declare 
+  -- Local variables here
+  V_NOME_PAIS            VARCHAR2(50) := 'URUGUAI';
+  V_SIGLA_PAIS           VARCHAR2(10) := 'URU';
+  V_QTD_EXISTE_PAIS      NUMBER;
+  
+  V_QTD_PAIS_INICIO      NUMBER;
+  V_QTD_PAIS_FINAL       NUMBER;
+  
+  V_QTD_PAIS_SUL_INICIO NUMBER;
+  V_QTD_PAIS_SUL_FINAL   NUMBER;
+  
+begin
+  -- Test statements here
+  
+  BEGIN
+    SELECT COUNT (*)
+    INTO   V_QTD_EXISTE_PAIS
+    FROM   PRO_PAIS P
+    WHERE  P.NMPAIS = V_NOME_PAIS;
+  EXCEPTION
+    WHEN OTHERS THEN
+      dbms_output.put_line('Erro ao buscar o país ' || SQLERRM);
+  END;
+  
+  IF V_QTD_EXISTE_PAIS = 0 THEN
+    BEGIN
+      SELECT COUNT (*)
+      INTO V_QTD_PAIS_INICIO
+      FROM PRO_PAIS;
+    EXCEPTION
+    WHEN OTHERS THEN
+      dbms_output.put_line('Erro ao Buscar quantidade inicial ' || SQLERRM);
+    END;
+    
+    BEGIN
+      SELECT COUNT (*)
+      INTO   V_QTD_PAIS_SUL_INICIO
+      FROM   PRO_PAIS_SUL;
+    EXCEPTION
+      WHEN OTHERS THEN
+        dbms_output.put_line('Erro ao Buscar quantidade inicial ' || SQLERRM);
+    END;
+
+    BEGIN
+      INSERT INTO PRO_PAIS
+        (
+         PRO_PAIS.SGPAIS,
+         PRO_PAIS.NMPAIS
+        )
+        VALUES
+           (
+            V_SIGLA_PAIS,
+            V_NOME_PAIS
+           );
+      EXCEPTION
+        WHEN OTHERS THEN
+          dbms_output.put_line('Não foi possível inserir '|| SQLERRM);
+    END;
+      
+    BEGIN
+      SELECT COUNT (*)
+      INTO   V_QTD_PAIS_FINAL
+      FROM   PRO_PAIS;
+    EXCEPTION
+      WHEN OTHERS THEN
+        dbms_output.put_line('Erro ao Buscar quantidade final ' || SQLERRM);
+    END;
+    
+    BEGIN
+      SELECT COUNT (*)
+        INTO V_QTD_PAIS_SUL_FINAL
+        FROM PRO_PAIS_SUL;
+    EXCEPTION
+      WHEN OTHERS THEN
+        dbms_output.put_line('Erro ao Buscar quantidade final ' || SQLERRM);
+    END;
+    
+    IF (V_QTD_PAIS_INICIO < V_QTD_PAIS_FINAL)
+       AND
+       (V_QTD_PAIS_SUL_INICIO < V_QTD_PAIS_SUL_FINAL)   
+    THEN
+      COMMIT;
+    ELSE
+      ROLLBACK;
+    END IF;
+  ELSE
+    UPDATE PRO_PAIS P
+    SET    P.SGPAIS = V_SIGLA_PAIS
+    WHERE  P.NMPAIS = V_NOME_PAIS;
+    IF SQL%ROWCOUNT > 0 THEN
+      dbms_output.put_line('Sigla Alterada ' || SQLERRM);
+      COMMIT;
+    ELSE
+      dbms_output.put_line('RollBack executado ' || SQLERRM);
+      ROLLBACK;
+    END IF;
+    dbms_output.put_line('Pais ja existe ' || SQLERRM);
+    
+  END IF;
+end;
+
+----------------- Exercicio 
+
+--------------------- CURSOR com FETCH ---------------------------
+
+-- Created on 20/09/2020 by ORACLE 
+declare 
+  -- Local variables here
+  CURSOR FUNC IS
+    SELECT f.cod_func,
+           f.nom_func,
+           f.vl_salario               
+    FROM PRO_FUNC F
+    WHERE f.vl_salario > 2000;
+  
+  v_teste    pro_func%ROWTYPE;
+begin
+  -- Test statements here
+  OPEN FUNC;
+  LOOP
+    FETCH FUNC
+      INTO v_teste.cod_func,
+           v_teste.nom_func,
+           v_teste.vl_salario;
+      dbms_output.put_line('Nome: ' || v_teste.nom_func);
+      dbms_output.put_line('Salário: ' || v_teste.vl_salario);
+   EXIT 
+    WHEN FUNC%NOTFOUND;
+  END LOOP;
+  CLOSE FUNC;
+end;
+
+
+------------- Deletar com CURSOR Campos iguais e permanece 1 ----------------
+
+
+
 
