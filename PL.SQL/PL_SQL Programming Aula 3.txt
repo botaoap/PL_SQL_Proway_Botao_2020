@@ -1,1 +1,72 @@
 ----------------------- Trigger -----------------------
+Exemplo
+----------------------- Tela de SQL Window ------------------
+Criando apenas a "casca" do programa no SQL Window com a palavra NULL
+
+CREATE OR REPLACE TRIGGER TG_PRO_PAIS_INS
+BEFORE INSERT
+  ON PRO_PAIS
+FOR EACH ROW -- PARA CADA LINHA CRIADA
+
+BEGIN
+  -- :NEW.DTCADAST := SYSDATE;
+  -- :NEW.USUCADAS := USER;
+  NULL; -- server só para "criar" a trigger 
+END;
+
+---------------------- Vai na pasta onde ta a trigger ----------------------
+Faz um browser da tabela e procura pela pasta Trigger para poder abrir 
+pela pasta e ter a estrutura, logo fazendo as restrições.
+Quando vc achar a pasta da trigger clica em Edit.
+
+CREATE OR REPLACE TRIGGER TG_PRO_PAIS_INS
+BEFORE INSERT
+  ON PRO_PAIS
+FOR EACH ROW -- PARA CADA LINHA CRIADA
+
+BEGIN
+  :NEW.DTCADAST := SYSDATE;
+  :NEW.USUCADAS := USER;
+  :NEW.DTALTERA := SYSDATE;
+  :NEW.USUALTER := USER;
+  :NEW.CDPAIS   := PRO_PAIS_SEQ.NEXTVAL;
+  
+END;
+
+-------------------- CRIANDO SEQUENCE --------------------------
+CREATE SEQUENCE PRO_PAIS_SEQ
+
+MAXVALUE 9999999999
+MINVALUE 4
+INCREMENT BY 1
+NOCACHE
+NOCYCLE
+
+-------------------- Fazendo teste da Trigger ------------------
+Trigger preenche campos da tabela na qual o Banco preenche automaticamente,
+ou seja, campos que o usuario n precisa cadastrar.
+ 
+-- Created on 20/09/2020 by ORACLE 
+declare 
+  -- Local variables here
+  i integer;
+begin
+  -- Test statements here
+  BEGIN
+    INSERT INTO PRO_PAIS
+      (
+       PRO_PAIS.SGPAIS,
+       PRO_PAIS.NMPAIS
+      )
+      VALUES
+         (
+          'PRG',
+          'PARAGUAI'
+         );
+    EXCEPTION
+      WHEN OTHERS THEN
+        dbms_output.put_line('Não foi possível inserir '|| SQLERRM);
+  END;
+end;
+
+---------------- 

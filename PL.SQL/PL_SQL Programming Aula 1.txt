@@ -239,7 +239,7 @@ begin
 
 end;
 
---------------------------- Exercicio usando Select,INTO e Tableas no PL/SQL --------------------
+--------------------- Exercicio usando Select,INTO e Tableas no PL/SQL --------------------
 -- Created on 05/09/2020 by ORACLE 
 declare 
   -- Local variables here
