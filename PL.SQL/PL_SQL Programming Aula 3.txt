@@ -354,7 +354,55 @@ begin
   END IF;
 end;
 
------------------ Exercicio 
+----------------- Exercicio TRIGGER ------------------------------
+__________ CRIANDO TABELA __________
+CREATE TABLE PRO_DADOS
+(
+ COD_DADOS    NUMBER NOT NULL,
+ FIST_NAME    VARCHAR2(20),
+ LAST_NAME    VARCHAR(25)
+)
+_________ CRIANDO SEQUENCE _________
+CREATE SEQUENCE SEQUENCE_TESTE
+
+MINVALUE 1
+MAXVALUE 999999999
+START WITH 1
+INCREMENT BY 1
+
+_________ TRIGGER _________
+CREATE OR REPLACE TRIGGER TG_PRO_DADOS_INS
+BEFORE INSERT
+  ON PRO_DADOS
+FOR EACH ROW -- PARA CADA LINHA CRIADA
+
+BEGIN
+ :NEW.ID := SEQUENCE_TESTE.NEXTVAL;
+END;
+
+_________ INSERINDO DADOS _________
+INSERT INTO PRO_DADOS
+(
+ FIRST_NAME,
+ LAST_NAME
+)
+VALUES
+(
+ 'JOAO',
+ 'SANTOS'
+)
+
+INSERT INTO PRO_DADOS
+(
+ FIRST_NAME,
+ LAST_NAME
+)
+VALUES
+(
+ 'YASMIN',
+ 'SILVA'
+)
+
 
 --------------------- CURSOR com FETCH ---------------------------
 
@@ -377,16 +425,77 @@ begin
       INTO v_teste.cod_func,
            v_teste.nom_func,
            v_teste.vl_salario;
-      dbms_output.put_line('Nome: ' || v_teste.nom_func);
-      dbms_output.put_line('Salário: ' || v_teste.vl_salario);
    EXIT 
     WHEN FUNC%NOTFOUND;
+      dbms_output.put_line('Nome: '                     ||
+                         RPAD(v_teste.nom_func,20,' ')  ||
+                         'Funcionário: '                ||
+                         RPAD(v_teste.vl_salario,10,' ')
+                         );
   END LOOP;
   CLOSE FUNC;
 end;
 
+-------------- CURSOR com ciclo FOR ----------------------------
+begin
+dbms_output.put_line('/*===== FOR LOOP =====*/');
+  FOR T IN FUNC
+    LOOP
+      dbms_output.put_line('Nome: '                ||
+                           RPAD(T.NOM_FUNC,20,' ') ||
+                           'Funcionário: '         ||
+                           RPAD(T.VL_SALARIO,10,' ')
+                           );
+    END LOOP;
+
+end;
+--------------- CURSOR com passagem de PARAMETRO --------------------
+
+-- Created on 20/09/2020 by ORACLE 
+declare 
+  -- Local variables here
+  CURSOR FUNC_P(P_COD_DEPTO NUMBER) IS
+   SELECT F.NOM_FUNC
+   FROM   PRO_FUNC F
+   WHERE  F.COD_DPTO = P_COD_DEPTO;
+   
+begin
+  -- Test statements here
+  FOR F IN FUNC_P(4)
+    LOOP
+      dbms_output.put_line(F.NOM_FUNC);
+    END LOOP;
+end;
+
+--------------- CURSOR (não Declarado) --------------------------
+
+-- Created on 20/09/2020 by ORACLE 
+declare 
+  -- Local variables here
+  v_bonus  NUMBER;
+begin
+  -- Test statements here
+  FOR F IN 
+    (
+     SELECT nom_func,
+            vl_salario
+     FROM   PRO_FUNC F 
+    )
+    LOOP
+      v_bonus := (F.VL_SALARIO * 0.09);
+      dbms_output.put_line(
+                           'Funcionário: '           || 
+                           RPAD(F.NOM_FUNC,20,' ')   ||
+                           'Valor Ant = '            ||
+                           RPAD(F.VL_SALARIO,10,' ') ||
+                           'Valor Novo = '           ||
+                           v_bonus
+                           );
+    END LOOP;
+end;
 
 ------------- Deletar com CURSOR Campos iguais e permanece 1 ----------------
+
 
 
 
