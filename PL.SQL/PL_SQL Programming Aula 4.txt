@@ -264,8 +264,60 @@ CREATE OR REPLACE PACKAGE BODY PRG_FUNCIONARIO
  
  END PRG_FUNCIONARIO;
 
+---------------- Incremento de Package BODY 1º -------------------
+CREATE OR REPLACE PACKAGE BODY PRG_FUNCIONARIO
 
--------------
+ IS -- FAZ EXECUTAR O CÓDIGO 
+
+ PROCEDURE PRG_DADOS_FUNC
+   (
+    P_CODIGO      IN NUMBER,
+    P_NOME_DPTO   OUT VARCHAR2,
+    P_CIDADE      OUT VARCHAR2,
+    P_FUNC        OUT VARCHAR2
+   )
+   
+   IS
+   
+   BEGIN
+     SELECT D.NM_DPTO,
+            C.NMCIDADE,
+            F.nom_func
+     INTO   P_NOME_DPTO,
+            P_CIDADE,
+            P_FUNC
+     FROM   PRO_FUNC F
+     
+     JOIN PRO_DEPTO D ON F.COD_DPTO  = D.COD_DPTO
+     JOIN PRO_CIDADE C ON F.CDCIDADE = C.CDCIDADE
+          
+     WHERE F.COD_FUNC = P_CODIGO;  
+   
+   END PRG_DADOS_FUNC;
+ 
+ END PRG_FUNCIONARIO;
+
+---------------- Incremento de Package BODY 2º -------------------
+
+------------- Teste da pcocedure em Teste Window -------------
+-- Created on 27/09/2020 by ORACLE 
+declare 
+  -- Local variables here
+  
+  v_dpto     system.pro_depto.nm_dpto   % TYPE;
+  v_cidade   system.pro_cidade.nmcidade % TYPE;
+  v_nome     system.pro_func.nom_func   % TYPE;
+  
+begin
+  -- Test statements here
+  
+  PRG_FUNCIONARIO.PRG_DADOS_FUNC(5,v_dpto,v_cidade,v_nome);
+  
+  dbms_output.put_line(RPAD('Departamento: ',15,' ') || v_dpto   );
+  dbms_output.put_line(RPAD('Cidade: ',15,' ')       || v_cidade );
+  dbms_output.put_line(RPAD('Nome: ',15,' ')         || v_nome   );
+  
+end;
 
 
 
