@@ -105,8 +105,42 @@ end;
 
 
 --------------------- PROCEDIMENTOS --------------------
+----------- SQL WINDOW -----------------
+*** Usando Procedimentos ***
 
+-- Created on 27/09/2020 by ORACLE 
+declare 
+  -- Local variables here
+  
+  v_nome    system.pro_func.nom_func%TYPE;
+  v_sal     system.pro_func.vl_salario%TYPE;
+  v_sal_new system.pro_func.vl_salario%TYPE;
+  
+begin
+  -- Test statements here
+  
+  SELECT fc_busca_func(2),
+         fc_busca_sal(2)
+  INTO   v_nome,
+         v_sal
+  FROM   dual;
+  
+  pr_salario(2);
+  
+  v_sal_new := fc_busca_sal(2);
+  
+  dbms_output.put_line('Nome: '                ||
+                        RPAD(v_nome,20,' ')    ||
+                       'Salario Real: '        || 
+                        RPAD(v_sal,15,' ')     ||
+                       'Reajuste: '            ||
+                        RPAD(v_sal_new,20,' ') 
+                       ); 
+         
+  
+end;
 
+-------------- 
 
 
 
