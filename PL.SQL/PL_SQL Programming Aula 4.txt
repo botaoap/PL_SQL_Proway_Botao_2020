@@ -1,0 +1,35 @@
+----------------------- Aula 4 ----------------------
+----------------- Exercicio FUNÇÕES -----------------
+CREATE OR REPLACE FUNCTION FC_BUSCA_SAL
+   (v_cod IN system.pro_func.cod_func%TYPE)
+    RETURN NUMBER
+ IS v_salario system.pro_func.vl_salario%TYPE := 0;
+ BEGIN
+   SELECT vl_salario
+   INTO   vl_salario
+   FROM   system.pro_func
+  WHERE cod_func = v_cod;
+   RETURN (v_salario);
+   
+ END FC_BUSCA_SAL;
+** Para acessar essa Função, vai na pasta da função e clica em Edit para
+poder ver quais possiveis erros pode ter no codigo**
+/////////////////////////////////////////
+------- SQL WINDOW ------
+SELECT FC_BUSCA_SAL(2)
+FROM   dual
+/////////////////////////////////////////
+------- Test Window -----
+-- Created on 27/09/2020 by ORACLE 
+declare 
+  -- Local variables here
+  i real;
+begin
+  -- Test statements here
+  
+  i := fc_busca_sal(2);
+  
+  dbms_output.put_line('Valor: ' || i);
+  
+end;
+///////////////////////////////////////
