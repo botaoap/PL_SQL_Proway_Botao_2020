@@ -462,7 +462,59 @@ begin
   
 end;
 
+------------------- Record + Tabela + Lista -----------------------
 
+-- Created on 27/09/2020 by ORACLE 
+declare 
+  -- DEFINIÇÃO
+  TYPE t_cidade IS RECORD (cidade  VARCHAR2(50),
+                           ESTADO  VARCHAR2(50)
+                          );
+  
+  TYPE t_tabela IS TABLE OF t_cidade INDEX BY BINARY_INTEGER;
+                           
+  TYPE t_lista  IS VARRAY(3) OF NUMBER(5);
+  
+  -- DECLARAÇÃO
+  x    t_cidade;
+  v    t_lista;
+  TB   t_tabela;
+  
+  CURSOR cidade IS
+    SELECT C.CDCIDADE,
+           C.NMCIDADE,
+           E.NMESTADO
+    FROM   PRO_CIDADE C
+    
+    JOIN PRO_ESTA E ON C.CDESTA = E.CDESTA;
+    
+   
+begin
+  -- Test statements here
+  
+  --x.cod  := 1;
+  --x.nome := 'Teste';
+  
+  v := t_lista(10,30,20);
+  
+  FOR T IN 1..3
+    LOOP
+      dbms_output.put_line('Posição ' || T || 'º: ' || v(T));
+    END LOOP;
+  
+  FOR C IN cidade
+    LOOP
+      TB(C.CDCIDADE).CIDADE   := C.NMCIDADE;
+      TB(C.CDCIDADE).ESTADO := C.NMESTADO;
+    END LOOP;
+    
+    dbms_output.put_line(TB(1).CIDADE);
+    dbms_output.put_line(TB(1).ESTADO);
+    
+    dbms_output.put_line(TB(3).CIDADE);
+    dbms_output.put_line(TB(3).ESTADO);
+    
+end;
 
 
 
