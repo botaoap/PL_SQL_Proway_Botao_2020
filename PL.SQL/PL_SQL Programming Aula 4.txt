@@ -23,13 +23,16 @@ FROM   dual
 -- Created on 27/09/2020 by ORACLE 
 declare 
   -- Local variables here
-  i real;
+  i integer;
+  v_sal pro_func.vl_salario%TYPE;
+  
 begin
   -- Test statements here
   
-  i := fc_busca_sal(2);
-  
-  dbms_output.put_line('Valor: ' || i);
-  
+  i     := fc_busca_sal(2);
+  v_sal := fc_busca_sal(2);
+  dbms_output.put_line('Valor Inteiro: ' || i);
+  dbms_output.put_line('Valor Real: ' || v_sal);  
+
 end;
 ///////////////////////////////////////
