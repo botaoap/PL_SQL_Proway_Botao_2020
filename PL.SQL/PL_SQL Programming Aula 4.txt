@@ -36,3 +36,105 @@ begin
 
 end;
 ///////////////////////////////////////
+CREATE OR REPLACE FUNCTION FC_BUSCA_SAL
+   (v_cod IN system.pro_func.cod_func%TYPE)
+    RETURN NUMBER
+ IS v_salario system.pro_func.vl_salario%TYPE := 0;
+ BEGIN
+   SELECT vl_salario
+   INTO   v_salario
+   FROM   system.pro_func
+  WHERE cod_func = v_cod;
+   RETURN (v_salario);
+
+ END FC_BUSCA_SAL;
+
+///////////////////////////////////////
+CREATE OR REPLACE FUNCTION FC_BUSCA_FUNC
+  (v_cod IN system.pro_func.cod_func%TYPE)
+    RETURN VARCHAR2
+ IS v_func system.pro_func.nom_func%TYPE := 0;
+ BEGIN
+   SELECT nom_func
+   INTO   v_func
+   FROM   system.pro_func
+  WHERE cod_func = v_cod;
+   RETURN (v_func);
+
+ END FC_BUSCA_FUNC;
+
+--------------- Exercicio fazer Busca mais de um funcionario ---------------
+-- Created on 27/09/2020 by ORACLE 
+declare 
+  -- Local variables here
+  
+  v_sal1    pro_func.vl_salario%TYPE;
+  V_func1   pro_func.nom_func%TYPE;
+  
+  v_sal2    pro_func.vl_salario%TYPE;
+  V_func2   pro_func.nom_func%TYPE;
+  
+  v_busca  integer := 0;
+begin
+  -- Test statements here
+  
+    v_sal1  := fc_busca_sal(2);
+    v_func1 := fc_busca_func(2);
+    dbms_output.put_line('Nome: '               ||
+                          RPAD(v_func1,20,' ')  ||
+                          'Salario Real: '      || 
+                          RPAD(v_sal1,20,' ')
+                         );  
+    
+    SELECT fc_busca_func(3),
+           fc_busca_sal(3)
+    INTO   v_func2,
+           v_sal2
+    FROM   dual;
+    --where  v_busca = 3;
+    
+    
+    dbms_output.put_line('Nome: '               ||
+                          RPAD(v_func2,20,' ')  ||
+                          'Salario Real: '      || 
+                          RPAD(v_sal2,20,' ')
+                         );  
+
+
+end;
+
+
+--------------------- PROCEDIMENTOS --------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
