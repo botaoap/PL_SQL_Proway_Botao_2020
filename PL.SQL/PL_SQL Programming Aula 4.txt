@@ -142,6 +142,66 @@ end;
 
 -------------- Procedimento com Prametro de saida ------------
 
+CREATE OR REPLACE PROCEDURE PR_SALARIO_2
+   (p_id IN system.pro_func.cod_func%TYPE,
+    p_saida OUT NUMBER
+   )
+    
+   IS
+
+   BEGIN
+     UPDATE system.pro_func
+     SET    vl_salario = vl_salario * 1.1
+     WHERE  cod_func = p_id;
+     
+     SELECT fc.vl_salario
+     INTO   p_saida
+     FROM   pro_func fc
+     where fc.cod_func = p_id;
+
+   END PR_SALARIO_2;
+
+-------------- Procedimento com Paramentro de Saida + mensagem de ERRO -----------
+CREATE OR REPLACE PROCEDURE PR_SALARIO_2
+   (p_id IN system.pro_func.cod_func%TYPE,
+    p_saida OUT NUMBER,
+    p_mensagem OUT VARCHAR2
+   )
+    
+   IS
+   v_update_ok number;
+   BEGIN
+     begin
+       UPDATE system.pro_func
+       SET    vl_salario = vl_salario * 1.1
+       WHERE  cod_func = p_id;
+       v_update_ok := SQL%ROWCOUNT;
+     EXCEPTION
+       WHEN others THEN
+         p_mensagem := 'Erro ao atualizar Salário ' || SQLERRM;
+     end;
+     
+     begin   
+       SELECT fc.vl_salario
+       INTO   p_saida
+       FROM   pro_func fc
+       where fc.cod_func = p_id;
+     EXCEPTION 
+       WHEN others THEN
+         p_mensagem := ' Funcionario inexistente ' || SQLERRM;
+     end;
+     
+     IF v_update_ok > 1 THEN
+       commit;
+     ELSE
+       rollback;
+       p_mensagem := (p_mensagem || ' Atualização Recusada!  ');
+     END IF;
+     
+   END PR_SALARIO_2;
+
+---------------------- 
+
 
 
 
