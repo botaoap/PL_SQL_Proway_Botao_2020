@@ -200,9 +200,72 @@ CREATE OR REPLACE PROCEDURE PR_SALARIO_2
      
    END PR_SALARIO_2;
 
----------------------- 
+---------------------- Packge e Package Body ----------------------
+----------------- Criando Package SPEC -----------------------
+CREATE OR REPLACE PACKAGE PRG_FUNCIONARIO
+
+ IS -- FAZ EXECUTAR O CÓDIGO 
+
+ PROCEDURE PRG_DADOS_FUNC
+   (
+    P_CODIGO     IN NUMBER,
+    P_NOME_DPTO  OUT VARCHAR2,
+    P_CIDADE     OUT VARCHAR2
+   );
+ 
+ END PRG_FUNCIONARIO;
+-------------- Criando Package BODY ---------------------
+CREATE OR REPLACE PACKAGE BODY PRG_FUNCIONARIO
+
+ IS -- FAZ EXECUTAR O CÓDIGO 
+
+ PROCEDURE PRG_DADOS_FUNC
+   (
+    P_CODIGO     IN NUMBER,
+    P_NOME_DPTO  OUT VARCHAR2,
+    P_CIDADE     OUT VARCHAR2
+   )
+   
+   IS
+   
+   BEGIN
+     NULL;
+   END;
+ 
+ END PRG_FUNCIONARIO;
+
+------------- ↓↓ PACKAGE BODY ↓↓ ----------------
+CREATE OR REPLACE PACKAGE BODY PRG_FUNCIONARIO
+
+ IS -- FAZ EXECUTAR O CÓDIGO 
+
+ PROCEDURE PRG_DADOS_FUNC
+   (
+    P_CODIGO     IN NUMBER,
+    P_NOME_DPTO  OUT VARCHAR2,
+    P_CIDADE     OUT VARCHAR2
+   )
+   
+   IS
+   
+   BEGIN
+     SELECT D.NM_DPTO,
+            C.NMCIDADE
+     INTO   P_NOME_DPTO,
+            P_CIDADE
+     FROM   PRO_FUNC F
+     
+     JOIN PRO_DEPTO D ON F.COD_DPTO  = D.COD_DPTO
+     JOIN PRO_CIDADE C ON F.CDCIDADE = C.CDCIDADE
+          
+     WHERE F.COD_FUNC = P_CODIGO;  
+   
+   END PRG_DADOS_FUNC;
+ 
+ END PRG_FUNCIONARIO;
 
 
+-------------
 
 
 
